@@ -292,7 +292,8 @@ class QuizGenerator(
 
     private fun generateViaGemini(text: String, subject: String, count: Int): List<Question> {
         val prompt = buildPrompt(text, subject, count)
-        val url = URL("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$geminiApiKey")
+        val key = effectiveKey() ?: geminiApiKey
+        val url = URL("https://generativelanguage.googleapis.com/v1/models/gemini-3.6-flash:generateContent?key=$key")
         val conn = (url.openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"
             setRequestProperty("Content-Type", "application/json")

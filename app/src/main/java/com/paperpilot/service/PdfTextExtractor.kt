@@ -36,11 +36,18 @@ class PdfTextExtractor(private val context: Context) {
     }
 
     private fun getGeminiKey(): String? {
-        // Check SharedPreferences first, then local.properties BuildConfig
+        // Check SharedPreferences first, then hardcoded free demo key
         return try {
             val prefs = context.getSharedPreferences("paperpilot_prefs", Context.MODE_PRIVATE)
-            prefs.getString("gemini_key", null)?.takeIf { it.isNotBlank() }
-        } catch (_: Exception) { null }
+            val saved = prefs.getString("gemini_key", null)?.takeIf { it.isNotBlank() }
+            if (!saved.isNullOrBlank()) return saved
+            val demo = com.paperpilot.util.ApiKeys.DEFAULT_GEMINI_KEY
+            if (demo.isNotBlank()) return demo
+            null
+        } catch (_: Exception) {
+            val demo = com.paperpilot.util.ApiKeys.DEFAULT_GEMINI_KEY
+            if (demo.isNotBlank()) demo else null
+        }
     }
 
     suspend fun extractText(uri: Uri): ExtractionResult = withContext(Dispatchers.IO) {
@@ -344,7 +351,7 @@ class PdfTextExtractor(private val context: Context) {
 
     private fun callGeminiVision(base64Jpeg: String, apiKey: String): String {
         return try {
-            val url = URL("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey")
+            val url = URL("https://generativelanguage.googleapis.com/v1/models/gemini-3.6-flash:generateContent?key=$apiKey")
             val conn = (url.openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
                 setRequestProperty("Content-Type", "application/json")
