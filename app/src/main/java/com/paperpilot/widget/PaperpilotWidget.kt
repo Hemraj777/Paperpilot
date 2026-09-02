@@ -2,6 +2,7 @@ package com.paperpilot.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.*
@@ -30,7 +31,7 @@ class PaperpilotWidget : GlanceAppWidget() {
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
-                .background(ColorProvider(day = androidx.compose.ui.graphics.Color(0xFFF8FAFC), night = androidx.compose.ui.graphics.Color(0xFF0F172A)))
+                .background(ColorProvider(Color(0xFFF8FAFC)))
                 .padding(12.dp),
             verticalAlignment = Alignment.Top,
             horizontalAlignment = Alignment.Start
@@ -38,33 +39,33 @@ class PaperpilotWidget : GlanceAppWidget() {
             Row(modifier = GlanceModifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
                 Text(
                     text = "Paperpilot • CEE",
-                    style = TextStyle(fontSize = 10.sp, color = ColorProvider(day = androidx.compose.ui.graphics.Color(0xFF4F46E5), night = androidx.compose.ui.graphics.Color(0xFF818CF8)))
+                    style = TextStyle(fontSize = 10.sp, color = ColorProvider(Color(0xFF4F46E5)))
                 )
             }
             Spacer(modifier = GlanceModifier.height(6.dp))
             Text(
                 text = "Tap to open • Pull to get next question",
-                style = TextStyle(fontSize = 12.sp, color = ColorProvider(day = androidx.compose.ui.graphics.Color(0xFF334155), night = androidx.compose.ui.graphics.Color.White))
+                style = TextStyle(fontSize = 12.sp, color = ColorProvider(Color(0xFF334155)))
             )
             Spacer(modifier = GlanceModifier.height(12.dp))
             Box(
                 modifier = GlanceModifier
                     .fillMaxWidth()
-                    .background(ColorProvider(day = androidx.compose.ui.graphics.Color(0xFF4F46E5), night = androidx.compose.ui.graphics.Color(0xFF4338CA)))
+                    .background(ColorProvider(Color(0xFF4F46E5)))
                     .padding(10.dp)
                     .clickable(actionStartActivity<MainActivity>()),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Open Paperpilot",
-                    style = TextStyle(fontSize = 13.sp, color = ColorProvider(day = androidx.compose.ui.graphics.Color.White, night = androidx.compose.ui.graphics.Color.White))
+                    style = TextStyle(fontSize = 13.sp, color = ColorProvider(Color.White))
                 )
             }
             Spacer(modifier = GlanceModifier.height(8.dp))
             Row(modifier = GlanceModifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = "↻ Next  •  👁 Show Answer",
-                    style = TextStyle(fontSize = 11.sp, color = ColorProvider(day = androidx.compose.ui.graphics.Color(0xFF64748B), night = androidx.compose.ui.graphics.Color(0xFF94A3B8))),
+                    style = TextStyle(fontSize = 11.sp, color = ColorProvider(Color(0xFF64748B))),
                     modifier = GlanceModifier.clickable(actionRunCallback<WidgetActions.NextQuestionAction>())
                 )
             }

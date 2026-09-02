@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.documentfile)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play)
     implementation(libs.mlkit.text.recognition)
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)

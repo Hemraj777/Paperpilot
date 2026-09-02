@@ -1,6 +1,7 @@
 package com.paperpilot.widget
 
 import android.content.Context
+import androidx.glance.appwidget.updateAll
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.paperpilot.PaperpilotApp

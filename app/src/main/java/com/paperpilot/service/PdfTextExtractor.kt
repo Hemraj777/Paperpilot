@@ -7,9 +7,9 @@ import android.os.ParcelFileDescriptor
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
-import kotlinx.coroutines.tasks.await
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import kotlinx.coroutines.tasks.await
 
 data class ExtractionResult(val text: String, val pageCount: Int)
 
