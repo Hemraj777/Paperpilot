@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Paperpilot</string>
+    <string name="tagline">Upload. Learn. Remember.</string>
+    <string name="widget_name">Paperpilot Quiz</string>
+    <string name="widget_description">Revise CEE questions from your PDFs on homescreen</string>
+    <string name="upload_pdf">Upload PDF</string>
+    <string name="select_subject">Select Subject</string>
+    <string name="generate_quiz">Generate Quiz</string>
+    <string name="quiz_empty">No questions yet. Upload a PDF to generate!</string>
+</resources>
