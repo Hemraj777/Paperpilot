@@ -36,14 +36,14 @@ fun SettingsScreen(onBack: () -> Unit) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Warning, null, tint = MaterialTheme.colorScheme.onErrorContainer)
                         Spacer(Modifier.width(8.dp))
-                        Text("CamScanner Handwritten Fix", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onErrorContainer)
+                        Text("AI-ONLY MODE • Free Key Required", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onErrorContainer)
                     }
                     Spacer(Modifier.height(8.dp))
-                    Text("If your PDFs are CamScanner scans of HANDWRITTEN notes and you see only 'CamScanner' in extracted preview, MLKit cannot read handwriting well.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onErrorContainer)
+                    Text("Paperpilot is now 100% AI: No offline fallback. Upload → AI reads content → Gemini creates complex CEE questions.", style = MaterialTheme.typography.bodySmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = MaterialTheme.colorScheme.onErrorContainer)
                     Spacer(Modifier.height(8.dp))
-                    Text("✅ SOLUTION: Add Gemini API key below → enables Gemini Vision OCR (reads handwritten accurately, ignores watermark). Typed PDFs work offline without key.", style = MaterialTheme.typography.bodySmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = MaterialTheme.colorScheme.onErrorContainer)
+                    Text("If PDFs are CamScanner handwritten, Gemini Vision is required (MLKit sees only watermark). Typed PDFs also use AI for best quality.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onErrorContainer)
                     Spacer(Modifier.height(8.dp))
-                    Text("How to get key: aistudio.google.com/app/apikey → Create API key → paste below. It's free.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onErrorContainer)
+                    Text("Get FREE key in 30 sec: aistudio.google.com/app/apikey → Create API key → paste below. Free quota: 60 req/min.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onErrorContainer)
                 }
             }
 
@@ -53,7 +53,7 @@ fun SettingsScreen(onBack: () -> Unit) {
                         Text("Gemini API Key", style = MaterialTheme.typography.titleMedium)
                         if (saved) Icon(Icons.Default.CheckCircle, null, tint = MaterialTheme.colorScheme.primary)
                     }
-                    Text("For high-quality CEE questions + handwritten CamScanner OCR. Leave blank for offline mock.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("REQUIRED: AI-only. No offline fallback. Free key from aistudio.google.com", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = geminiKey,
@@ -83,9 +83,10 @@ fun SettingsScreen(onBack: () -> Unit) {
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        if (saved) "✓ Gemini Vision will now transcribe CamScanner handwritten notes accurately." else "⚠️ No key: CamScanner handwritten may show only watermark. Add key or use typed PDFs.",
+                        if (saved) "✓ AI ready: Upload → Gemini reads & creates CEE Hard questions." else "❌ No key: AI will FAIL. Add free key above (no offline fallback).",
                         style = MaterialTheme.typography.bodySmall,
-                        color = if (saved) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                        color = if (saved) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                     )
                 }
             }

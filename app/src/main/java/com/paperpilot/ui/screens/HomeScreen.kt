@@ -84,8 +84,8 @@ fun HomeScreen(
                                     },
                                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
                                 ) { Icon(Icons.Default.Info, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text("View Extracted", style = MaterialTheme.typography.labelSmall) }
-                                if (it.contains("Poor")) {
-                                    Button(onClick = onOpenSettings, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) { Text("Fix in Settings", style = MaterialTheme.typography.labelSmall) }
+                                if (it.contains("Poor") || it.contains("key", ignoreCase = true) || it.contains("AI") || it.contains("Failed")) {
+                                    Button(onClick = onOpenSettings, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) { Text("Add Key in Settings", style = MaterialTheme.typography.labelSmall) }
                                 }
                             }
                         }

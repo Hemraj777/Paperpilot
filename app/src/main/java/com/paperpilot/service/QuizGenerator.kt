@@ -12,6 +12,14 @@ import kotlin.random.Random
 class QuizGenerator(
     private val geminiApiKey: String? = null
 ) {
+    // Resolve effective key: constructor param > Settings prefs > hardcoded free demo key
+    private fun effectiveKey(): String? {
+        if (!geminiApiKey.isNullOrBlank()) return geminiApiKey
+        // Try hardcoded free demo key
+        val demo = com.paperpilot.util.ApiKeys.DEFAULT_GEMINI_KEY
+        if (demo.isNotBlank()) return demo
+        return null
+    }
 
     suspend fun generateQuestions(
         text: String,
@@ -19,24 +27,28 @@ class QuizGenerator(
         pdfId: Long,
         count: Int = 10
     ): List<Question> = withContext(Dispatchers.IO) {
-        if (text.length < 300) {
-            Log.w("QuizGenerator", "Text too short (${text.length}), using fallback")
-            return@withContext generateContentAwareMock(text.ifBlank { "Sample $subject content for CEE preparation. " }, subject, pdfId, count)
+        val key = effectiveKey()
+        if (key.isNullOrBlank()) {
+            throw IllegalStateException("AI key missing: Add your FREE Gemini API key in Settings → Gemini API Key (get in 30 sec at aistudio.google.com/app/apikey). AI-only mode - no offline fallback.")
         }
-        // Try Gemini first if key available - Gemini gives best complex questions
-        if (!geminiApiKey.isNullOrBlank()) {
-            try {
-                val aiQuestions = generateViaGemini(text, subject, count)
-                if (aiQuestions.isNotEmpty()) {
-                    Log.d("QuizGenerator", "Gemini generated ${aiQuestions.size} complex questions")
-                    return@withContext aiQuestions.map { it.copy(pdfId = pdfId, subject = subject) }
-                }
-            } catch (e: Exception) {
-                Log.e("QuizGenerator", "Gemini failed: ${e.message}")
-            }
+        if (text.length < 200) {
+            throw IllegalStateException("Not enough text extracted (${text.length} chars). For CamScanner, ensure High-quality scan + Gemini key in Settings, or upload typed PDF. Check View Extracted preview.")
         }
-        // Content-aware offline generation - complex, not fixed
-        generateContentAwareMock(text, subject, pdfId, count)
+        if (text.length < 500) {
+            Log.w("QuizGenerator", "Short text ${text.length}, but proceeding with AI")
+        }
+        // AI-ONLY: always use Gemini for complex CEE questions
+        val aiQuestions = try {
+            generateViaGemini(text, subject, count)
+        } catch (e: Exception) {
+            Log.e("QuizGenerator", "Gemini failed: ${e.message}", e)
+            throw IllegalStateException("AI generation failed: ${e.message}. Check internet + valid Gemini key. No offline fallback in AI-only mode.")
+        }
+        if (aiQuestions.isEmpty()) {
+            throw IllegalStateException("AI returned no questions. Try clearer PDF or different subject. Check View Extracted shows real content, not watermark.")
+        }
+        Log.d("QuizGenerator", "Gemini generated ${aiQuestions.size} complex CEE questions via AI")
+        aiQuestions.map { it.copy(pdfId = pdfId, subject = subject) }
     }
 
     private fun generateContentAwareMock(text: String, subject: String, pdfId: Long, count: Int): List<Question> {
