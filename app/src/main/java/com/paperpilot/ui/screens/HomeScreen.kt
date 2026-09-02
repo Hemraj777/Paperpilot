@@ -11,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
@@ -84,7 +83,7 @@ fun HomeScreen(
                                         showExtractionDialog = true
                                     },
                                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
-                                ) { Icon(Icons.Default.Article, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text("View Extracted", style = MaterialTheme.typography.labelSmall) }
+                                ) { Icon(Icons.Default.Info, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text("View Extracted", style = MaterialTheme.typography.labelSmall) }
                                 if (it.contains("Poor")) {
                                     Button(onClick = onOpenSettings, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) { Text("Fix in Settings", style = MaterialTheme.typography.labelSmall) }
                                 }
