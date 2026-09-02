@@ -7,12 +7,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -82,7 +84,7 @@ fun HomeScreen(
                                         showExtractionDialog = true
                                     },
                                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
-                                ) { Icon(Icons.Default.Visibility, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text("View Extracted", style = MaterialTheme.typography.labelSmall) }
+                                ) { Icon(Icons.Default.Article, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text("View Extracted", style = MaterialTheme.typography.labelSmall) }
                                 if (it.contains("Poor")) {
                                     Button(onClick = onOpenSettings, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) { Text("Fix in Settings", style = MaterialTheme.typography.labelSmall) }
                                 }
@@ -189,7 +191,7 @@ fun HomeScreen(
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-                    androidx.compose.foundation.layout.Box(modifier = Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
+                    Box(modifier = Modifier.verticalScroll(rememberScrollState())) {
                         Text(txt.take(6000).ifBlank { "Empty - extraction failed" }, style = MaterialTheme.typography.bodySmall)
                     }
                     Spacer(modifier = Modifier.height(8.dp))
