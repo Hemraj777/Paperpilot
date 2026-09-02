@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Help
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -80,7 +80,7 @@ fun HomeScreen(
                 item {
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Column(Modifier.padding(24.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(Icons.Default.Help, null, modifier = Modifier.size(48.dp), tint = MaterialTheme.colorScheme.primary)
+                            Icon(Icons.Default.Info, null, modifier = Modifier.size(48.dp), tint = MaterialTheme.colorScheme.primary)
                             Spacer(modifier = Modifier.height(8.dp))
                             Text("No PDFs yet", style = MaterialTheme.typography.titleMedium)
                             Text("Upload your CEE notes, textbooks or scanned handwritten notes", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -100,7 +100,7 @@ fun HomeScreen(
                                 }
                             }
                             Column(horizontalAlignment = Alignment.End) {
-                                IconButton(onClick = { vm.generateQuiz(pdf.id) }) { Icon(Icons.Default.Help, null, tint = MaterialTheme.colorScheme.primary) }
+                                IconButton(onClick = { vm.generateQuiz(pdf.id) }) { Icon(Icons.Default.Info, null, tint = MaterialTheme.colorScheme.primary) }
                                 IconButton(onClick = { vm.deletePdf(pdf.id) }) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.error) }
                             }
                         }
