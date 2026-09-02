@@ -29,16 +29,46 @@ class HomeViewModel : ViewModel() {
     private val _message = MutableStateFlow<String?>(null)
     val message: StateFlow<String?> = _message
 
+    private val _lastExtraction = MutableStateFlow<String?>(null)
+    val lastExtraction: StateFlow<String?> = _lastExtraction
+
     fun addPdf(uri: Uri, subject: String) {
         viewModelScope.launch {
             _isLoading.value = true
             val res = repo.addPdf(uri, subject)
             _isLoading.value = false
-            _message.value = res.fold(
-                onSuccess = { "Added ${it.fileName} • ${it.pageCount} pages" },
-                onFailure = { "Failed: ${it.message}" }
-            )
+            // Load debug info
+            try {
+                val prefs = PaperpilotApp.instance.getSharedPreferences("paperpilot_debug", android.content.Context.MODE_PRIVATE)
+                val len = prefs.getInt("last_extraction_len", 0)
+                val quality = prefs.getInt("last_extraction_quality", 0)
+                val isScanned = prefs.getBoolean("last_is_scanned", false)
+                val preview = prefs.getString("last_extraction_text", "")?.take(300) ?: ""
+                _lastExtraction.value = prefs.getString("last_extraction_text", null)
+                val qualityMsg = when {
+                    quality >= 60 -> "Excellent"
+                    quality >= 45 -> "Good"
+                    quality >= 30 -> "Fair"
+                    else -> "Poor (handwritten? Set Gemini key in Settings)"
+                }
+                _message.value = res.fold(
+                    onSuccess = { "Added ${it.fileName} • ${it.pageCount} pages • $len chars ($qualityMsg, q=$quality, scanned=$isScanned). Preview: ${preview.take(80)}..." },
+                    onFailure = { "Failed: ${it.message}" }
+                )
+            } catch (e: Exception) {
+                _message.value = res.fold(
+                    onSuccess = { "Added ${it.fileName} • ${it.pageCount} pages" },
+                    onFailure = { "Failed: ${it.message}" }
+                )
+            }
         }
+    }
+
+    fun getLastExtraction(): String? {
+        return try {
+            PaperpilotApp.instance.getSharedPreferences("paperpilot_debug", android.content.Context.MODE_PRIVATE)
+                .getString("last_extraction_text", null)
+        } catch (_: Exception) { null }
     }
 
     fun generateQuiz(pdfId: Long) {

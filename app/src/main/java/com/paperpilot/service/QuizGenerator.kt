@@ -48,6 +48,8 @@ class QuizGenerator(
             .map { it.trim() }
             .filter { it.length in 40..400 }
             .filter { it.count { c -> c.isLetter() } > it.length * 0.6 } // mostly letters, not garbled
+            .filterNot { it.contains("CamScanner", ignoreCase = true) }
+            .filterNot { it.contains("Scanned", ignoreCase = true) && it.length < 80 }
             .distinct()
             .shuffled(Random(System.currentTimeMillis()))
 

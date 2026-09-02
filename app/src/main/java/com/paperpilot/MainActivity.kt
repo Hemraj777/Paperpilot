@@ -37,7 +37,8 @@ fun AppNav() {
         composable("home") {
             HomeScreen(
                 onOpenQuiz = { pdfId -> nav.navigate("quiz/$pdfId") },
-                onOpenPdf = { pdfId -> nav.navigate("detail/$pdfId") }
+                onOpenPdf = { pdfId -> nav.navigate("detail/$pdfId") },
+                onOpenSettings = { nav.navigate("settings") }
             )
         }
         composable("detail/{pdfId}") { backStack ->

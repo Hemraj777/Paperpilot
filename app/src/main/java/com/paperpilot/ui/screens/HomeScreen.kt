@@ -11,6 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,6 +28,7 @@ import com.paperpilot.util.Subjects
 fun HomeScreen(
     onOpenQuiz: (Long) -> Unit,
     onOpenPdf: (Long) -> Unit,
+    onOpenSettings: () -> Unit = {},
     vm: HomeViewModel = viewModel()
 ) {
     val pdfs by vm.pdfs.collectAsState()
@@ -35,6 +38,8 @@ fun HomeScreen(
     var selectedSubject by remember { mutableStateOf(Subjects.list[0]) }
     var showSubjectPicker by remember { mutableStateOf(false) }
     var pendingUri by remember { mutableStateOf<Uri?>(null) }
+    var showExtractionDialog by remember { mutableStateOf(false) }
+    var extractionPreview by remember { mutableStateOf<String?>(null) }
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let { pendingUri = it; showSubjectPicker = true }
@@ -44,7 +49,10 @@ fun HomeScreen(
         topBar = {
             TopAppBar(
                 title = { Text("Paperpilot", fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary, titleContentColor = MaterialTheme.colorScheme.onPrimary)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary, titleContentColor = MaterialTheme.colorScheme.onPrimary),
+                actions = {
+                    IconButton(onClick = onOpenSettings) { Icon(Icons.Default.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.onPrimary) }
+                }
             )
         },
         floatingActionButton = {
@@ -66,6 +74,19 @@ fun HomeScreen(
                         message?.let {
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(it, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.bodyMedium)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                OutlinedButton(
+                                    onClick = {
+                                        extractionPreview = vm.getLastExtraction()
+                                        showExtractionDialog = true
+                                    },
+                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+                                ) { Icon(Icons.Default.Visibility, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text("View Extracted", style = MaterialTheme.typography.labelSmall) }
+                                if (it.contains("Poor")) {
+                                    Button(onClick = onOpenSettings, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) { Text("Fix in Settings", style = MaterialTheme.typography.labelSmall) }
+                                }
+                            }
                         }
                     }
                 }
@@ -148,6 +169,35 @@ fun HomeScreen(
                 }) { Text("Upload") }
             },
             dismissButton = { TextButton(onClick = { showSubjectPicker = false }) { Text("Cancel") } }
+        )
+    }
+
+    if (showExtractionDialog) {
+        AlertDialog(
+            onDismissRequest = { showExtractionDialog = false },
+            title = { Text("Extracted Text Preview") },
+            text = {
+                val txt = extractionPreview ?: vm.getLastExtraction() ?: "No extraction yet. Upload a PDF first."
+                val isPoor = txt.contains("CamScanner", ignoreCase = true) && txt.length < 500
+                Column(modifier = Modifier.heightIn(max = 400.dp)) {
+                    if (isPoor) {
+                        Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
+                            Column(Modifier.padding(8.dp)) {
+                                Text("⚠️ CamScanner detected but handwritten not recognized", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onErrorContainer)
+                                Text("MLKit sees only watermark. Set Gemini API key in Settings → Gemini Vision will transcribe handwritten accurately (or upload typed PDF).", style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                    androidx.compose.foundation.layout.Box(modifier = Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
+                        Text(txt.take(6000).ifBlank { "Empty - extraction failed" }, style = MaterialTheme.typography.bodySmall)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Length: ${txt.length} chars • Quality: ${if (txt.length > 500) "Good" else if (txt.length > 200) "Fair" else "Poor"}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            },
+            confirmButton = { TextButton(onClick = { showExtractionDialog = false }) { Text("Close") } },
+            dismissButton = { TextButton(onClick = { extractionPreview = vm.getLastExtraction(); }) { Text("Refresh") } }
         )
     }
 }
