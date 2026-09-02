@@ -31,11 +31,11 @@ class QuizGenerator(
         if (key.isNullOrBlank()) {
             throw IllegalStateException("AI key missing: Add your FREE Gemini API key in Settings → Gemini API Key (get in 30 sec at aistudio.google.com/app/apikey). AI-only mode - no offline fallback.")
         }
-        if (text.length < 200) {
-            throw IllegalStateException("Not enough text extracted (${text.length} chars). For CamScanner, ensure High-quality scan + Gemini key in Settings, or upload typed PDF. Check View Extracted preview.")
+        if (text.length < 80) {
+            throw IllegalStateException("Not enough text extracted (${text.length} chars). For CamScanner handwritten, ensure scan is clear and View Extracted shows real content (not just watermark). Try typed PDF or clearer scan.")
         }
-        if (text.length < 500) {
-            Log.w("QuizGenerator", "Short text ${text.length}, but proceeding with AI")
+        if (text.length < 300) {
+            Log.w("QuizGenerator", "Short text ${text.length}, proceeding with AI (may generate fewer questions)")
         }
         // AI-ONLY: always use Gemini for complex CEE questions
         val aiQuestions = try {
