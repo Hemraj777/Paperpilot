@@ -8,8 +8,8 @@ local.properties
 # Android
 *.ap_
 *.aab
-*.apk
-!gradle/wrapper/gradle-wrapper.jar
+!Paperpilot*.apk
+!APK_README.txt
 
 # IDE
 .idea/
